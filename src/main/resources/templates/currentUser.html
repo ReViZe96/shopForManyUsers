@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <title th:text="${currUser.username}"></title>
+    <meta charset="utf-8">
+</head>
+
+<body>
+<a th:href="@{/admin/allUsers}" title="Управление базой пользователей">Модерация пользователей</a>
+<a th:href="@{/mainPage}">На главную</a>
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Выйти</button>
+</form>
+</div>
+<h3 th:text="${currUser.username}"></h3>
+<h5 th:text="'Email:  '+${currUser.email}"></h5>
+<div th:unless="${currRoles.isEmpty()}">
+    <h5>РОЛИ:</h5>
+    <ul th:each="role : ${currRoles}">
+        <li th:if="${role.name}==${Admin}">
+            Администратор
+            <form th:action="'/admin/deleteCurrentRoleForThis/'+${role.id}+'/'+${currUser.id}" method="post">
+                <button type="submit">Лишить роли</button>
+            </form>
+        </li>
+        <li th:if="${role.name}==${User}">
+            Пользователь
+            <form th:action="'/admin/deleteCurrentRoleForThis/'+${role.id}+'/'+${currUser.id}" method="post">
+                <button type="submit">Лишить роли</button>
+            </form>
+        </li>
+        <!--отвратительное масштабирование представления, но пока - так-->
+    </ul>
+</div>
+<div th:if="${currRoles.isEmpty()}">
+    <h5>Пользователь не имеет ни одной роли</h5>
+</div>
+<form th:action="'/admin/addUsersRoles/'+${currUser.id}" method="post">
+    <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
+    <input type="text" name="role" placeholder="Введите название роли (ROLE_НАЗВАНИЕ)" required>
+    <button type="submit">Добавить роль</button>
+</form>
+<div th:unless="${currClothes.isEmpty()}">
+    <h5>СПИСОК ПОКУПОК:</h5>
+    <ul th:each="clothes : ${currClothes}">
+        <li><a th:href="@{'/showCurrentClothe/'+${clothes.id}}" th:text="${clothes.title}"></a></li>
+    </ul>
+</div>
+<div th:if="${currClothes.isEmpty()}">
+    <h5>Пользователь ничего не покупал</h5>
+</div>
+<form th:action="'/admin/deleteUser/'+${currUser.id}" method="post">
+    <button type="submit">Удалить пользователя</button>
+</form>
+</body>
+</html>

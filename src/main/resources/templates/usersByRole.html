@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
+
+<head>
+    <title>Результаты поиска</title>
+    <meta charset="utf-8">
+</head>
+
+<body>
+<p sec:authentication="principal.username"></p>
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Выйти</button>
+</form>
+<a th:href="@{/mainPage}">На главную</a></td>
+<div th:if="${foundUsers.isEmpty()}">
+    <h3>Поьзователей с указанной ролью не найдено</h3>
+</div>
+<div th:unless="${foundUsers.isEmpty()}">
+    <h3 th:text="'Найдено '+${amount}+' пользователей с указанной ролью'"></h3>
+    <table>
+        <tr>
+            <td><h5>Логин</h5></td>
+            <td><h5>Электронная почта</h5></td>
+        </tr>
+        <tr th:each="user : ${foundUsers}">
+            <td><a th:href="@{'/admin/showCurrentUser/'+${user.id}}" th:text="${user.username}"/></td>
+            <td th:text="${user.email}"></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

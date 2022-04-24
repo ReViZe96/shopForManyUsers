@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="en">
+<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Модерация пользователей</title>
+</head>
+
+<body>
+<p sec:authentication="principal.username"></p>
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Выйти</button>
+</form>
+<a th:href="@{/mainPage}">На главную</a></td>
+<table>
+    <tr>
+        <td><h3>Оперативный поиск</h3></td>
+        <td>
+            <form th:action="@{/admin/findByRole}" method="post">
+                <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden"/>
+                <input type="text" pattern=".{1,50}" name="role" placeholder="Введите роль (ROLE_...)" required/>
+                <button type="submit">Найти всех с указанной ролью</button>
+            </form>
+        </td>
+        <td>
+            <form th:action="@{/admin/findByUsername}" method="post">
+                <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden"/>
+                <input type="text" pattern=".{1,500}" name="username" placeholder="Введите логин" required/>
+                <button type="submit">Найти по логину</button>
+            </form>
+        </td>
+        <td>
+            <form th:action="@{/admin/findByEmail}" method="post">
+                <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden"/>
+                <input type="text" pattern=".{1,100}" name="email" placeholder="Введите адрес электронной почты"
+                       required/>
+                <button type="submit">Найти по почте</button>
+            </form>
+        </td>
+    </tr>
+</table>
+<h3>Список зарегистрированных пользователей</h3>
+<table>
+    <tr>
+        <td><h5>Логин</h5></td>
+        <td><h5>Электронная почта</h5></td>
+    </tr>
+    <tr th:each="user : ${usersList}">
+        <td><a th:href="@{'/admin/showCurrentUser/'+${user.id}}" th:text="${user.username}"/></td>
+        <td th:text="${user.email}"></td>
+    </tr>
+</table>
+</body>
+</html>

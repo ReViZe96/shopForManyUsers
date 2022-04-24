@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <title>Изменение выполнено</title>
+    <meta charset="utf-8">
+</head>
+
+<body>
+<div th:if="${username!=null}" }>
+    <h3>Логин успешно изменен</h3>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Выйти</button>
+    </form>
+</div>
+<div th:if="${password!=null}" }>
+    <h3>Пароль успешно изменен</h3>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Выйти</button>
+    </form>
+</div>
+</body>
+</html>

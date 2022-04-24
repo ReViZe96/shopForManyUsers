@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Личный кабинет</title>
+</head>
+
+<body>
+<table>
+    <tr>
+        <td><a th:href="@{/mainPage}">На главную</a></td>
+        <td><a th:href="@{/catalog}">Каталог товаров</a></td>
+        <td><a th:href="@{/categories}">Категории</a></td>
+        <td><a th:href="@{/womensCloth}">Женская одежда </a></td>
+        <td><a th:href="@{/mensCloth}">Мужская одежда</a></td>
+    </tr>
+</table>
+<form th:action="@{/search}" method="post">
+    <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden"/>
+    <input type="text" pattern=".{1,500}" name="title" placeholder="Введите название товара" required/>
+    <button type="submit">Найти</button>
+</form>
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Выйти</button>
+</form>
+<h3 th:text="${currUser.username}"></h3>
+<form th:action="'/user/editUsername/'+${currUser.id}" method="post">
+    <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden"/>
+    <input type="text" pattern=".{1,500}" name="username" placeholder="Введите новый логин"
+           required/>
+    <button type="submit">Изменить</button>
+</form>
+<h5 th:text="'Email: '+${currUser.email}"></h5>
+<form th:action="'/user/editEmail/'+${currUser.id}" method="post">
+    <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden"/>
+    <input type="text" pattern=".{1,100}" name="email" placeholder="Введите новый адрес электронной почты"
+           required/>
+    <button type="submit">Изменить</button>
+</form>
+<h5>Изменение пароля</h5>
+<form th:action="'/user/editPassword/'+${currUser.id}" method="post">
+    <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden"/>
+    <input type="text" pattern=".{1,50}" name="password" placeholder="Введите новый пароль"
+           required/>
+    <button type="submit">Изменить</button>
+</form>
+<div th:unless="${currClothes.isEmpty()}">
+    <h5>СПИСОК ПОКУПОК:</h5>
+    <ul th:each="clothes : ${currClothes}">
+        <li><a th:href="@{'/showCurrentClothe/'+${clothes.id}}" th:text="${clothes.title}"></a></li>
+    </ul>
+</div>
+<div th:if="${currClothes.isEmpty()}">
+    <h5>Cписок ваших покупок пуст</h5>
+</div>
+</body>
+</html>

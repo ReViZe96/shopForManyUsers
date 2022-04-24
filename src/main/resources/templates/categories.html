@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Категории товаров</title>
+</head>
+
+<body>
+<div sec:authorize="hasRole('USER')">
+    <a th:href="@{/user/profile}" sec:authentication="principal.username" title="Личный кабинет"></a>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Выйти</button>
+    </form>
+</div>
+<div sec:authorize="hasRole('ADMIN')">
+    <a th:href="@{/admin/allUsers}" title="Управление базой пользователей">Модерация пользователей</a>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Выйти</button>
+    </form>
+</div>
+<a th:href="@{/mainPage}">На главную</a>
+<a th:href="@{/catalog}">Каталог товаров</a>
+<a th:href="@{/womensCloth}">Женская одежда </a>
+<a th:href="@{/mensCloth}">Мужская одежда</a>
+<a sec:authorize="!(isAuthenticated())" th:href="@{/login}">Войти</a>
+<a sec:authorize="!(isAuthenticated())" th:href="@{/registrationForm}">Зарегистрироваться</a>
+<form th:action="@{/search}" method="post">
+    <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden"/>
+    <input type="text" pattern=".{1,500}" name="title" placeholder="Введите название товара" required/>
+    <button type="submit">Найти</button>
+</form>
+<h3>Категории товаров</h3>
+<table>
+    <tr th:each="categories : ${allCategories}">
+        <td><h5><a th:href="@{'/showCurrentCategory/'+${categories.id}}" th:text="${categories.name}"/></h5></td>
+        <td sec:authorize="hasRole('ADMIN')">
+            <form th:action="'/admin/editCategoryName/'+${categories.id}" method="post">
+                <input type="text" pattern=".{1,500}" name="name"
+                       placeholder="Введите новое название категории товаров" required/>
+                <button type="submit">Изменить</button>
+            </form>
+        </td>
+        <td sec:authorize="hasRole('ADMIN')">
+            <form th:action="'/admin/deleteCategory/'+${categories.id}" method="post">
+                <button type="submit">Удалить Категорию</button>
+            </form>
+        </td>
+    </tr>
+</table>
+<form sec:authorize="hasRole('ADMIN')" th:action="@{/admin/addNewCategory}" method="post">
+    <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden"/>
+    <input type="text" pattern=".{1,500}" name="name"
+           placeholder="Введите название" required/>
+    <button type="submit">Добавить новую категорию товаров</button>
+</form>
+</body>
+</html>

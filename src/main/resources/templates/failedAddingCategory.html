@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="en">
+<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
+
+<head>
+    <title>Ошибка</title>
+    <meta charset="utf-8">
+</head>
+
+<body>
+<div sec:authorize="hasRole('ADMIN')">
+    <a th:href="@{/admin/allUsers}" title="Управление базой пользователей">Модерация пользователей</a>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Выйти</button>
+    </form>
+</div>
+<table>
+    <tr>
+        <td><a th:href="@{/catalog}">Каталог товаров</a></td>
+        <td><a th:href="@{/categories}">Категории</a></td>
+        <td><a th:href="@{/womensCloth}">Женская одежда </a></td>
+        <td><a th:href="@{/mensCloth}">Мужская одежда</a></td>
+    </tr>
+</table>
+<form th:action="@{/search}" method="post">
+    <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden"/>
+    <input type="text" pattern=".{1,500}" name="title" placeholder="Введите название товара" required/>
+    <button type="submit">Найти</button>
+</form>
+<h3>Ошибка. Данная категория уже существует</h3>
+</body>
+</html>

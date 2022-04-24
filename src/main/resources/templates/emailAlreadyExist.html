@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="en">
+<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
+
+<head>
+    <title>Ошибка</title>
+    <meta charset="utf-8">
+</head>
+
+<body>
+<a th:href="@{/user/profile}" sec:authentication="principal.username" title="Личный кабинет"></a>
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Выйти</button>
+</form>
+<table>
+    <tr>
+        <td><a th:href="@{/catalog}">Каталог товаров</a></td>
+        <td><a th:href="@{/categories}">Категории</a></td>
+        <td><a th:href="@{/womensCloth}">Женская одежда </a></td>
+        <td><a th:href="@{/mensCloth}">Мужская одежда</a></td>
+    </tr>
+</table>
+<form th:action="@{/search}" method="post">
+    <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden"/>
+    <input type="text" pattern=".{1,500}" name="title" placeholder="Введите название товара" required/>
+    <button type="submit">Найти</button>
+</form>
+<h3>Ошибка. К указанной почте уже привязан аккаунт</h3>
+</body>
+</html>

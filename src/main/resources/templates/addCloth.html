@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить товар</title>
+</head>
+
+<body>
+<div sec:authorize="hasRole('ADMIN')">
+    <a th:href="@{/admin/allUsers}" title="Управление базой пользователей">Модерация пользователей</a>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Выйти</button>
+    </form>
+</div>
+<a th:href="@{/mainPage}">На главную</a>
+<a th:href="@{/categories}">Категории</a>
+<a th:href="@{/womensCloth}">Женская одежда </a>
+<a th:href="@{/mensCloth}">Мужская одежда</a>
+
+<form th:action="@{/search}" method="post">
+    <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden"/>
+    <input type="text" pattern=".{1,500}" name="title" placeholder="Введите название товара" required/>
+    <button type="submit">Найти</button>
+</form>
+<h3>Добавить новый товар</h3>
+<form th:action="@{/admin/addCloth}" method="post">
+    <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden"/>
+    <input type="text" pattern=".{1,500}" name="title" placeholder="Введите название товара"
+           required/>
+    <input type="text" name="category" placeholder="Введите категорию товара"
+           required/>
+    <input type="text" pattern="(М|Ж){1}" name="sex" placeholder="Введите М (для мужчин) или Ж (для женщин)"
+           required/>
+    <input type="text" pattern=".{1,5000}" name="description" placeholder="Введите описание товара"
+           required/>
+    <input type="text" pattern="\d+" name="price" placeholder="Введите цену товара"
+           required/>
+    <button type="submit">Добавить</button>
+</form>
+</body>
+</html>

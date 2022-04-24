@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Авторизация</title>
+</head>
+
+<body>
+</div>
+<div th:if="${error}">
+    <p>Введен неверный логин и/или пароль. Повторите ввод или <a th:href="@{/registrationForm}">зарегистрируйтесь</a>
+    </p>
+</div>
+<div>
+    <h3>Авторизация</h3>
+    <form th:action="@{/login}" method="post">
+        <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
+        <input type="text" name="username" placeholder="Введите логин"/>
+        <input type="password" name="password" placeholder="Введите пароль"/>
+        <input type="submit" value="Войти"/>
+    </form>
+    <a th:href="@{/mainPage}">На главную</a>
+</div>
+</body>
+</html>

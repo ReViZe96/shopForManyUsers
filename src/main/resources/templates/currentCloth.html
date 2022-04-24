@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
+
+<head>
+    <title th:text="${currCloth.title}"></title>
+    <meta charset="utf-8">
+</head>
+
+<body>
+<div sec:authorize="hasRole('USER')">
+    <a th:href="@{/user/profile}" sec:authentication="principal.username" title="Личный кабинет"></a>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Выйти</button>
+    </form>
+</div>
+<div sec:authorize="hasRole('ADMIN')">
+    <a th:href="@{/admin/allUsers}" title="Управление базой пользователей">Модерация пользователей</a>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Выйти</button>
+    </form>
+</div>
+<a th:href="@{/mainPage}">На главную</a>
+<a th:href="@{/catalog}">Каталог товаров</a>
+<a th:href="@{/categories}">Категории</a>
+<a th:href="@{/womensCloth}">Женская одежда </a>
+<a th:href="@{/mensCloth}">Мужская одежда</a>
+<a sec:authorize="!(isAuthenticated())" th:href="@{/login}">Войти</a>
+<a sec:authorize="!(isAuthenticated())" th:href="@{/registrationForm}">Зарегистрироваться</a>
+<form th:action="@{/search}" method="post">
+    <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden"/>
+    <input type="text" pattern=".{1,500}" name="title" placeholder="Введите название товара" required/>
+    <button type="submit">Найти</button>
+</form>
+<h3 th:text="${currCloth.title}"></h3>
+<div sec:authorize="hasRole('ADMIN')">
+    <form th:action="'/admin/editTitle/'+${currCloth.id}" method="post">
+        <input type="text" pattern=".{1,500}" name="title" placeholder="Введите новое название для данного товара"
+               required/>
+        <button type="submit">Изменить</button>
+    </form>
+</div>
+<div th:unless="${currCategories.isEmpty()}">
+    <h5>КАТЕГОРИИ: </h5>
+    <ul th:each="category : ${currCategories}">
+        <li><a th:href="@{'/showCurrentCategory/'+${category.id}}" th:text="${category.name}"></a>
+            <div sec:authorize="hasRole('ADMIN')">
+                <form th:action="'/admin/deleteCategoryForThis/'+${category.id}+'/'+${currCloth.id}" method="post">
+                    <button type="submit">Убрать товар из категории</button>
+                </form>
+            </div>
+        </li>
+    </ul>
+</div>
+<div th:if="${currCategories.isEmpty()}">
+    <h5>Товар без категории</h5>
+</div>
+<div sec:authorize="hasRole('ADMIN')">
+    <form th:action="'/admin/editCategory/'+${currCloth.id}" method="post">
+        <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden"/>
+        <input type="text" name="name" placeholder="Введите новую категорию для данного товара" required/>
+        <button type="submit">Добавить</button>
+    </form>
+</div>
+<div th:if="${currCloth.sex=='М'}">
+    <h5><a th:href="@{/mensCloth}">Товар для мужчин</a></h5>
+</div>
+<div th:if="${currCloth.sex=='Ж'}">
+    <h5><a th:href="@{/womensCloth}">Товар для женщин</a></h5>
+</div>
+<div sec:authorize="hasRole('ADMIN')">
+    <form th:action="'/admin/editSex/'+${currCloth.id}" method="post">
+        <input type="text" pattern="(М|Ж){1}" name="sex" placeholder="Введите М или Ж" required/>
+        <button type="submit">Изменить</button>
+    </form>
+</div>
+<h5 th:text="'ОПИСАНИЕ: '+${currCloth.description}"></h5>
+<div sec:authorize="hasRole('ADMIN')">
+    <form th:action="'/admin/editDescription/'+${currCloth.id}" method="post">
+        <input type="text" pattern=".{1,5000}" name="description"
+               placeholder="Введите новое описание для данного товара" required/>
+        <button type="submit">Изменить</button>
+    </form>
+</div>
+<h5 th:text="'ЦЕНА: '+${currCloth.price}"></h5>
+<div sec:authorize="hasRole('ADMIN')">
+    <form th:action="'/admin/editPrice/'+${currCloth.id}" method="post">
+        <input type="text" pattern="\d+" name="price" placeholder="Введите новую цену для данного товара" required/>
+        <button type="submit">Изменить</button>
+    </form>
+</div>
+<form sec:authorize="hasRole('USER')" th:action="'/buyCurrentClothe/'+${currCloth.id}" method="post">
+    <button type="submit">Купить</button>
+</form>
+<div sec:authorize="hasRole('ADMIN')">
+    <div th:unless="${currUsers.isEmpty()}">
+        <h5>СПИСОК КУПИВШИХ:</h5>
+        <table>
+            <tr th:each="user : ${currUsers}">
+                <td><h5><a th:href="@{'/admin/showCurrentUser/'+${user.id}}" th:text="${user.username}"/></h5></td>
+            </tr>
+        </table>
+    </div>
+    <div th:if="${currUsers.isEmpty()}">
+        <h5>Данный товар никто не покупал</h5>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Каталог</title>
+</head>
+
+<body>
+<div sec:authorize="hasRole('USER')">
+    <a th:href="@{/user/profile}" sec:authentication="principal.username" title="Личный кабинет"></a>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Выйти</button>
+    </form>
+</div>
+<div sec:authorize="hasRole('ADMIN')">
+    <a th:href="@{/admin/allUsers}" title="Управление базой пользователей">Модерация пользователей</a>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Выйти</button>
+    </form>
+</div>
+<a th:href="@{/mainPage}">На главную</a>
+<a th:href="@{/categories}">Категории</a>
+<a th:href="@{/womensCloth}">Женская одежда </a>
+<a th:href="@{/mensCloth}">Мужская одежда</a>
+<a sec:authorize="!(isAuthenticated())" th:href="@{/login}">Войти</a>
+<a sec:authorize="!(isAuthenticated())" th:href="@{/registrationForm}">Зарегистрироваться</a>
+
+<form th:action="@{/search}" method="post">
+    <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden"/>
+    <input type="text" pattern=".{1,500}" name="title" placeholder="Введите название товара" required/>
+    <button type="submit">Найти</button>
+</form>
+<h3>Каталог товаров</h3>
+<table>
+    <tr>
+        <td><h5>Название</h5></td>
+        <td><h5>Цена</h5></td>
+    </tr>
+    <tr th:each="clothes : ${allClothes}">
+        <td><a th:href="@{'/showCurrentClothe/'+${clothes.id}}" th:text="${clothes.title}"/></td>
+        <td th:text="${clothes.price}"></td>
+        <td sec:authorize="hasRole('ADMIN')">
+            <form th:action="'/admin/deleteCloth/'+${clothes.id}" method="post">
+                <button type="submit">Удалить товар</button>
+            </form>
+        </td>
+    </tr>
+</table>
+<a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/addCloth}">Добавить товар</a>
+</body>
+</html>
